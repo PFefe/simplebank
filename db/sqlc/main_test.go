@@ -14,10 +14,12 @@ const (
 )
 
 var testQueries *Queries
+var testDB *sql.DB
 
 func TestMain(m *testing.M) {
 	// setup
-	conn, err := sql.Open(
+	var err error
+	testDB, err = sql.Open(
 		dbDriver,
 		dbSource,
 	)
@@ -28,7 +30,7 @@ func TestMain(m *testing.M) {
 		)
 	}
 
-	testQueries = New(conn)
+	testQueries = New(testDB)
 
 	os.Exit(m.Run())
 }

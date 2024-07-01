@@ -113,19 +113,11 @@ func TestUpdateAccount(t *testing.T) {
 		ID:      account1.ID,
 		Balance: util.RandomMoney(),
 	}
-	err := testQueries.UpdateAccount(
+
+	// Update the account balance
+	account2, err := testQueries.UpdateAccount(
 		context.Background(),
 		arg,
-	)
-	require.NoError(
-		t,
-		err,
-	)
-
-	// Fetch the updated account to verify the changes
-	account2, err := testQueries.GetAccount(
-		context.Background(),
-		account1.ID,
 	)
 	require.NoError(
 		t,
@@ -136,30 +128,44 @@ func TestUpdateAccount(t *testing.T) {
 		account2,
 	)
 
+	// Fetch the updated account to verify the changes
+	account3, err := testQueries.GetAccount(
+		context.Background(),
+		account1.ID,
+	)
+	require.NoError(
+		t,
+		err,
+	)
+	require.NotEmpty(
+		t,
+		account3,
+	)
+
 	require.Equal(
 		t,
 		account1.ID,
-		account2.ID,
+		account3.ID,
 	)
 	require.Equal(
 		t,
 		account1.Owner,
-		account2.Owner,
+		account3.Owner,
 	)
 	require.Equal(
 		t,
 		arg.Balance,
-		account2.Balance,
+		account3.Balance,
 	)
 	require.Equal(
 		t,
 		account1.Currency,
-		account2.Currency,
+		account3.Currency,
 	)
 	require.WithinDuration(
 		t,
 		account1.CreatedAt,
-		account2.CreatedAt,
+		account3.CreatedAt,
 		time.Second,
 	)
 }
