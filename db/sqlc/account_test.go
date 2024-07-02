@@ -142,6 +142,8 @@ func TestUpdateAccount(t *testing.T) {
 		account3,
 	)
 
+	expectedBalance := account1.Balance + arg.Balance
+
 	require.Equal(
 		t,
 		account1.ID,
@@ -154,7 +156,7 @@ func TestUpdateAccount(t *testing.T) {
 	)
 	require.Equal(
 		t,
-		arg.Balance,
+		expectedBalance,
 		account3.Balance,
 	)
 	require.Equal(
