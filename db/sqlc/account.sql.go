@@ -107,7 +107,7 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Acc
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Account
+	items := []Account{}
 	for rows.Next() {
 		var i Account
 		if err := rows.Scan(
@@ -132,7 +132,7 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Acc
 
 const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts
-set balance = $2
+set balance = balance + $2
 WHERE id = $1 RETURNING id, owner, balance, currency, created_at
 `
 

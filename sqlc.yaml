@@ -10,3 +10,4 @@ packages:
       emit_interface: false #This is the important line
       emit_exact_table_names: false #This is the important line
       emit_json_tags: true  #This is the important line
+      emit_empty_slices: true #This is the important line
