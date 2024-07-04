@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/PFefe/simplebank/util"
 	"github.com/stretchr/testify/require"
-	"simplebank/util"
 )
 
 // createRandomAccount is a helper function to create a random account

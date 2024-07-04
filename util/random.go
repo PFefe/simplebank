@@ -19,8 +19,8 @@ func RandomString(n int) string {
 }
 
 // RandomInt generates a random integer between min and max
-func RandomInt(min, max int) int {
-	return min + rand.Intn(max-min)
+func RandomInt(min, max int) int64 {
+	return int64(min + rand.Intn(max-min))
 }
 
 // RandomOwner generates a random owner name
@@ -30,11 +30,9 @@ func RandomOwner() string {
 
 // RandomMoney generates a random amount of money
 func RandomMoney() int64 {
-	return int64(
-		RandomInt(
-			0,
-			1000,
-		),
+	return RandomInt(
+		0,
+		1000,
 	)
 }
 

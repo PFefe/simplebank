@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"github.com/PFefe/simplebank/api"
+	db "github.com/PFefe/simplebank/db/sqlc"
+	"github.com/PFefe/simplebank/util"
 	_ "github.com/lib/pq"
 	"log"
-	"simplebank/api"
-	db "simplebank/db/sqlc"
-	"simplebank/util"
 )
 
 func main() {

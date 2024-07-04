@@ -1,9 +1,11 @@
 package api
 
 import (
+	"database/sql"
+	"errors"
+	db "github.com/PFefe/simplebank/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	db "simplebank/db/sqlc"
 )
 
 type createAccountRequest struct {
@@ -48,10 +50,10 @@ type getAccountRequest struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
-func (server *Server) getAccount(context *gin.Context) {
+func (server *Server) getAccount(ctx *gin.Context) {
 	var req getAccountRequest
-	if err := context.ShouldBindUri(&req); err != nil {
-		context.JSON(
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse(err),
 		)
@@ -59,18 +61,28 @@ func (server *Server) getAccount(context *gin.Context) {
 	}
 
 	account, err := server.store.GetAccount(
-		context,
+		ctx,
 		req.ID,
 	)
 	if err != nil {
-		context.JSON(
+		if errors.Is(
+			err,
+			sql.ErrNoRows,
+		) {
+			ctx.JSON(
+				http.StatusNotFound,
+				errorResponse(err),
+			)
+			return
+		}
+		ctx.JSON(
 			http.StatusInternalServerError,
 			errorResponse(err),
 		)
 		return
 	}
 
-	context.JSON(
+	ctx.JSON(
 		http.StatusOK,
 		account,
 	)

@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
+	"github.com/PFefe/simplebank/util"
 	"github.com/stretchr/testify/require"
-	"simplebank/util"
 	"testing"
 	"time"
 )

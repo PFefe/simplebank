@@ -1,16 +1,16 @@
 package api
 
 import (
+	db "github.com/PFefe/simplebank/db/sqlc"
 	"github.com/gin-gonic/gin"
-	db "simplebank/db/sqlc"
 )
 
 type Server struct {
-	store  *db.Store
+	store  db.Store
 	router *gin.Engine
 }
 
-func NewServer(store *db.Store) *Server {
+func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
 
@@ -36,6 +36,11 @@ func NewServer(store *db.Store) *Server {
 	router.PUT(
 		"/accounts/:id/update",
 		server.updateAccount,
+	)
+
+	router.POST(
+		"/transfers",
+		server.createTransfer,
 	)
 
 	server.router = router
