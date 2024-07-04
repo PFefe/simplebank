@@ -18,6 +18,11 @@ type MockStore struct {
 	recorder *MockStoreMockRecorder
 }
 
+func (m *MockStore) ListAccounts(ctx context.Context, arg db.ListAccountsParams) ([]db.Account, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 // MockStoreMockRecorder is the mock recorder for MockStore.
 type MockStoreMockRecorder struct {
 	mock *MockStore
@@ -155,7 +160,7 @@ func (mr *MockStoreMockRecorder) GetTransfer(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // ListAccount mocks base method.
-func (m *MockStore) ListAccount(arg0 context.Context, arg1 db.ListAccountParams) ([]db.Account, error) {
+func (m *MockStore) ListAccount(arg0 context.Context, arg1 db.ListAccountsParams) ([]db.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccount", arg0, arg1)
 	ret0, _ := ret[0].([]db.Account)

@@ -8,7 +8,7 @@ FROM accounts
 WHERE id = $1 LIMIT 1
 FOR NO KEY UPDATE;
 
--- name: ListAccount :many
+-- name: ListAccounts :many
 SELECT *
 FROM accounts
 ORDER BY id LIMIT $1

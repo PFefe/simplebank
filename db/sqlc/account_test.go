@@ -177,12 +177,12 @@ func TestListAccounts(t *testing.T) {
 		createRandomAccount(t)
 	}
 
-	arg := ListAccountParams{
+	arg := ListAccountsParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	accounts, err := testQueries.ListAccount(
+	accounts, err := testQueries.ListAccounts(
 		context.Background(),
 		arg,
 	)

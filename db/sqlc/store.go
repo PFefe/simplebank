@@ -4,20 +4,22 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 )
 
+// Store interface defines all store methods
 type Store interface {
 	Querier
 	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
 }
 
-// SQLStore Store provides all functions to execute db queries and transactions
+// SQLStore struct implements Store and provides methods to execute db queries and transactions
 type SQLStore struct {
 	*Queries
 	db *sql.DB
 }
 
-// NewStore creates a new Store
+// NewStore creates a new SQLStore
 func NewStore(db *sql.DB) Store {
 	return &SQLStore{
 		db:      db,
@@ -25,8 +27,8 @@ func NewStore(db *sql.DB) Store {
 	}
 }
 
-// ExecTx executes a function within a database transaction
-func (store SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
+// execTx executes a function within a database transaction
+func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(
 		ctx,
 		nil,
@@ -67,15 +69,15 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
-// TransferTx performs a money transfer from one account to the other
-// It creates a transfer record and update accounts' balance within a single database transaction
-func (store SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+// TransferTx performs a money transfer from one account to another
+func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 
 	err := store.execTx(
 		ctx,
 		func(q *Queries) error {
 			var err error
+
 			result.Transfer, err = q.CreateTransfer(
 				ctx,
 				CreateTransferParams{
@@ -85,6 +87,10 @@ func (store SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tra
 				},
 			)
 			if err != nil {
+				log.Printf(
+					"Failed to create transfer: %v",
+					err,
+				)
 				return err
 			}
 
@@ -96,6 +102,10 @@ func (store SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tra
 				},
 			)
 			if err != nil {
+				log.Printf(
+					"Failed to create from entry: %v",
+					err,
+				)
 				return err
 			}
 
@@ -107,6 +117,10 @@ func (store SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tra
 				},
 			)
 			if err != nil {
+				log.Printf(
+					"Failed to create to entry: %v",
+					err,
+				)
 				return err
 			}
 
@@ -130,15 +144,20 @@ func (store SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tra
 				)
 			}
 
-			return nil
+			if err != nil {
+				log.Printf(
+					"Failed to update accounts: %v",
+					err,
+				)
+			}
+			return err
 		},
 	)
 
 	return result, err
 }
 
-func addMoney(ctx context.Context, q *Queries, accountID1, amount1, accountID2,
-	amount2 int64) (account1, account2 Account, err error) {
+func addMoney(ctx context.Context, q *Queries, accountID1, amount1, accountID2, amount2 int64) (account1, account2 Account, err error) {
 	account1, err = q.AddAccountBalance(
 		ctx,
 		AddAccountBalanceParams{
