@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/PFefe/simplebank/util"
 	"github.com/stretchr/testify/require"
-	"simplebank/util"
 )
 
 // createRandomAccount is a helper function to create a random account
@@ -142,6 +142,8 @@ func TestUpdateAccount(t *testing.T) {
 		account3,
 	)
 
+	expectedBalance := account1.Balance + arg.Balance
+
 	require.Equal(
 		t,
 		account1.ID,
@@ -154,7 +156,7 @@ func TestUpdateAccount(t *testing.T) {
 	)
 	require.Equal(
 		t,
-		arg.Balance,
+		expectedBalance,
 		account3.Balance,
 	)
 	require.Equal(
@@ -175,12 +177,12 @@ func TestListAccounts(t *testing.T) {
 		createRandomAccount(t)
 	}
 
-	arg := ListAccountParams{
+	arg := ListAccountsParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	accounts, err := testQueries.ListAccount(
+	accounts, err := testQueries.ListAccounts(
 		context.Background(),
 		arg,
 	)
